@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_time_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TimePicker
+        android:id="@+id/dialog_time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:timePickerMode="spinner" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/dialog_button_timeOfDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="20dp"
+        android:clickable="true"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorAccentTint"
+        app:layout_anchor="@+id/dialog_time_picker"
+        app:layout_anchorGravity="left|bottom" />
+
+    <TextView
+        android:id="@+id/dialog_button_timeOfDay_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="6dp"
+        android:text="am"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/dialog_button_timeOfDay"
+        app:layout_anchorGravity="center" />
+
+
+</android.support.design.widget.CoordinatorLayout>
