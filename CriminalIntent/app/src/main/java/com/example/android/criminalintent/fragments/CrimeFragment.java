@@ -4,10 +4,12 @@ This is where we create the fragment_crime.xml and setup up the Textviews and ch
  */
 package com.example.android.criminalintent.fragments;
 
+import android.os.ParcelUuid;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,9 +40,9 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
     private DatePickerDialog dpd;
 
     //Fragment Arguments instead of Intent Extras(This makes code more neat and organized)
-    public static CrimeFragment newInstance(UUID crimeId) {
+    public static CrimeFragment newInstance(ParcelUuid crimeId) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_CRIME_ID, crimeId); //Similar to EXTRA format
+        args.putParcelable(ARG_CRIME_ID, crimeId); //Similar to EXTRA format
 
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
@@ -50,8 +52,8 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-        mCrime = CrimeLab.get().getCrime(crimeId);
+        ParcelUuid crimeId = (ParcelUuid) getArguments().getParcelable(ARG_CRIME_ID);
+        mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
 
@@ -83,9 +85,8 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
         });
 
         mDateButton.setText(mCrime.getDateFormat());
-        if (mCrime.getTime() != null) {
-            mTimeButton.setText(mCrime.getTime().toString());
-        }
+        mTimeButton.setText(mCrime.getTime());
+
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +137,7 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(mCrime.getDate());
         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -143,6 +145,7 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
         mCrime.setDate(cal.getTime());
         mCrime.setTime(mCrime.getDate());
         mTimeButton.setText(mCrime.getTime());
+        Log.d("myTag", "Hello " + mCrime.getTime());
     }
 
     @Override
@@ -154,5 +157,12 @@ public class CrimeFragment extends Fragment implements TimePickerDialog.OnTimeSe
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mCrime.setDate(cal.getTime());
         mDateButton.setText(mCrime.getDateFormat());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
     }
 }

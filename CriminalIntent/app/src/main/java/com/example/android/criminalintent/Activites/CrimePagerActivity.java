@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -37,9 +38,9 @@ public class CrimePagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crime_pager);
 
         mViewPager = (ViewPager) findViewById(R.id.crime_view_pager);
-        UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        ParcelUuid crimeId = (ParcelUuid) getIntent().getParcelableExtra(EXTRA_CRIME_ID);
 
-        mCrimes = CrimeLab.get().getCrimes();
+        mCrimes = CrimeLab.get(this).getCrimes();
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -63,7 +64,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     }
 
 
-    public static Intent newIntent(Context packageContext, UUID crimeId) {
+    public static Intent newIntent(Context packageContext, ParcelUuid crimeId) {
         Intent intent = new Intent(packageContext, CrimePagerActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
         return intent;

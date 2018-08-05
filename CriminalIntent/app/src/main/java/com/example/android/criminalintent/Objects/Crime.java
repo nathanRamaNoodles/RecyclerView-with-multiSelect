@@ -1,18 +1,17 @@
 package com.example.android.criminalintent.Objects;
 
 import android.os.Parcel;
+import android.os.ParcelUuid;
 import android.os.Parcelable;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
-public class Crime {
+public class Crime implements Parcelable {
 
-    private UUID mId;
+    private ParcelUuid mId;
     private String mTitle;
     private String DateFormat;
     private Date mDate;
@@ -21,11 +20,35 @@ public class Crime {
 
     public Crime() {
         //generate unique identifier
-        mId = UUID.randomUUID();
+        this(new ParcelUuid(UUID.randomUUID()));
+//        mId = UUID.randomUUID();
+    }
+
+    public Crime(ParcelUuid id) {
+        mId = id;
         mDate = Calendar.getInstance().getTime();
     }
 
-    public UUID getId() {
+    protected Crime(Parcel in) {
+        mTitle = in.readString();
+        DateFormat = in.readString();
+        mTime = in.readString();
+        mSolved = in.readByte() != 0;
+    }
+
+    public static final Creator<Crime> CREATOR = new Creator<Crime>() {
+        @Override
+        public Crime createFromParcel(Parcel in) {
+            return new Crime(in);
+        }
+
+        @Override
+        public Crime[] newArray(int size) {
+            return new Crime[size];
+        }
+    };
+
+    public ParcelUuid getId() {
         return mId;
     }
 
@@ -68,4 +91,16 @@ public class Crime {
         mSolved = solved;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mTitle);
+        dest.writeString(DateFormat);
+        dest.writeString(mTime);
+        dest.writeByte((byte) (mSolved ? 1 : 0));
+    }
 }
